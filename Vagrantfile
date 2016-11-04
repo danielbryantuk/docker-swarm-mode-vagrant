@@ -16,17 +16,15 @@ $node_ips = $num_nodes.times.collect { |n| $worker_ip_base + "#{n+2}" }
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   def customize_vm(config)
-    config.vm.box = "ubuntu/trusty64"
+    config.vm.box = "ubuntu/xenial64"
+    config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/xenial64/versions/20161102.0.0"
 
     config.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--memory", $vm_mem]
       v.customize ["modifyvm", :id, "--cpus", $vm_cpus]
-
-      # Use faster paravirtualized networking
-      v.customize ["modifyvm", :id, "--nictype1", "virtio"]
-      v.customize ["modifyvm", :id, "--nictype2", "virtio"]
-	    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
+
+    #config.vm.synced_folder ".", "/vagrant/" # fix broken ubuntu/xenial64 image
   end
 
   config.vm.define "node-1" do |node|
